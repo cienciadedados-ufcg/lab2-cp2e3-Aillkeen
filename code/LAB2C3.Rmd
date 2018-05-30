@@ -1,0 +1,106 @@
+---
+title: "LAB2C3"
+author: "Aillkeen"
+date: "29/05/2018"
+output: 
+  html_document: 
+    df_print: default
+    fig_width: 11
+    highlight: null
+    theme: readable
+---
+
+# Introdução
+
+Nas seções seguintes analisaremos dados sobre músicas e artistas, os dados foram colhidos do Spotify. O Spotify é um serviço de streaming de música, que além das músicas, oferece também informações relacionadas as elas, como: artistas, tempo de duração da música, popularidade, etc. Nas seções abaixo responderemos perguntas baseadas nesses dados, bem como analisaremos os resultados obtidos através de gráficos interativos.
+
+
+# Bibliotecas utilizadas
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r warning=FALSE, message=FALSE}
+library(tidyverse)
+library(rvest)
+library(magrittr)
+library(plotly)
+library(viridis)
+```
+
+# Carregamento dos dados
+
+```{r warning=FALSE, message=FALSE}
+forro = read_csv("data/forro_do_gogo_ao_mocoto.csv")
+tropicalistas = read_csv("data/tropicalistas.csv")
+```
+
+# Músicas de forró compostas nos anos mais atuais tendem a ter uma duração maior?
+
+Será que as músicas de forró nos dias atuais possuem um tempo de duração maior? Ou será que as músicas compostas antigamente possuiam o tempo de duração mais curto? Para responder essa pergunta analisaremos os álbuns de músicas de dois grandes artistas do Nordeste: Jackson do Pandeiro e Luiz Gonzaga.
+
+```{r warning=FALSE, message=FALSE}
+p <- ggplot(data = forro, mapping = aes(x = album_release_year, y = duration_ms, color = artist)) +
+    geom_smooth() +
+    facet_wrap(~artist, scale = "free_x")
+
+p <- ggplotly(p)
+p
+```
+
+
+Analisando o gráfico acima, podemos perceber que ocorreu uma redução no tempo das músicas de forró (especialmente desses dois artistas) ao longo do tempo. As músicas compostas em meados dos anos 80-90 eram mais longas, após esse período houve uma tendência na redução do tempo.
+
+# Músicas de forró de antigamente são mais enérgicas?
+
+Considerando os dados da pergunta anterior, será que mesmo com o tempo de duração menor as músicas de forró se tornaram mais enérgicas ou se tornaram menos enérgicas com o tempo?
+
+```{r warning=FALSE, message=FALSE}
+p <- ggplot(data = forro, mapping = aes(x = album_release_year, y = energy, color = artist)) +
+    geom_point()
+
+p <- ggplotly(p)
+p
+```
+
+
+Se compararmos os dados obitidos na primeira pergunta em conjunto do gráfico acima podemos perceber que quando as músicas começaram a se tornar mais curtas também começaram a aparecer mais composições de músicas menos enérgicas.
+
+# Em geral, a popularidade das músicas antigas são maiores do que as dos dias atuais?
+
+Será que as músicas compostas pelos artistas antigamente eram mais populares do que as que eles compõem hoje em dia? Para respondermos essa questão utilizaremos como base artistas tropicalistas, analisaremos grandes figuras da música brasileira como: Caetano Veloso, Gal Costa, Gilberto Gil, Maria Betânia e Tom Zé.
+
+```{r warning=FALSE, message=FALSE}
+p <- ggplot(data = tropicalistas, mapping = aes(x = album_release_year, y = album_popularity, color = album_popularity)) +
+    geom_jitter() +
+    scale_color_viridis() +
+    theme_bw()
+
+p <- ggplotly(p)
+p
+```
+
+
+Analisando o gráfico acima, podemos perceber que por volta dos anos 2000 as músicas começaram a ter uma popularidade maior. Um possível motivo para essa alta na popularidade pode ter sido o surgimento e também popularização da Internet, através dela pessoas começaram a conhecer,divulgar e compartilhar artistas que podiam passar despercebidos em décadas anteriores.
+
+
+# Os artistas tropicalistas faziam mais músicas acústicas antigamente ou nos dias atuais?
+
+Será que com o tempo as músicas acústicas decairam no repertórios dos artistas tropicalistas? Para respondermos essa pergunta utiliziremos os mesmos artistas da pergunta anterior.
+
+```{r warning=FALSE, message=FALSE}
+p <- ggplot(data = tropicalistas, mapping = aes(x = album_release_year, y = acousticness, color = acousticness)) +
+    geom_jitter() +
+    scale_color_viridis() +
+    theme_bw() +
+    facet_wrap(~artist, ncol = 2)
+    
+
+p <- ggplotly(p)
+p
+```
+
+
+No gráfico acima, podemos perceber que em geral os artistas tropicalistas mantiveram o acústico em seus repertórios ao longo dos anos, inclusive nos dias mais atuais.
+
